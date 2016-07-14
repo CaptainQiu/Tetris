@@ -1,6 +1,8 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+let Tetris = require('./Tetris');
+
 function caculate() {
     let date1 = new Date();
     let one = date1.getTime();
@@ -20,3 +22,6 @@ function caculate() {
     let two = date2.getTime();
     alert(two - one);
 }
+
+
+document.getElementById("debug1").onclick = Tetris.Tetris.PrintfTest();

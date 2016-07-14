@@ -1,17 +1,18 @@
+/// <reference path="github-electron.d.ts" />
 import electron = require('electron');
-
+import hashmap = require('./tools/hashmap');
 /**
  * Tetris
  */
-class Tetris {
+export class Tetris {
     
     shape: ShapeType;
     direction: Direction;
-    static dic: Array<number[][]>[];
-
+    static dic =new Array();
+    static hp = new hashmap.HashMap();
     
 
-    constructor( st:ShapeType,firstDirection:Direction) {
+    constructor( st:ShapeType) {
         
     }
 
@@ -29,7 +30,7 @@ class Tetris {
                          [0, 0, 0, 0]];
              case ShapeType.RLBlock:
                  return [[1, 1, 1, 0],
-                         [0, 0, 0, 1],
+                         [0, 0, 1, 0],
                          [0, 0, 0, 0],
                          [0, 0, 0, 0]];
              case ShapeType.LinePiece:
@@ -69,7 +70,8 @@ class Tetris {
   
   static Rotate90(block: number[][]): number[][]
   { 
-      let resB: number[][];
+      let resB: number[][] = new Array();
+      
       for (let i = 0; i < 4; i++)
       { 
           resB.push([0, 0, 0, 0]);
@@ -79,25 +81,123 @@ class Tetris {
       { 
           for (let j = 0; j < block[i].length;j++)
           { 
-              resB[i][j] = block[j][i];
+              resB[i][j] = block[3-j][i];
           }    
       }    
       return resB;
-  }  
+    }  
+
+
+
+  static MoveBlock(block: number[][], moveLeft: number): number[][] {
+      let resB: number[][]=new Array();
+      for (let i = 0; i < 4; i++) {
+          resB.push([0, 0, 0, 0]);
+      }
+
+      if (moveLeft == 90) {
+          for (let i = 0; i < 4; i++) {
+              for (let j = 2; j < 4; j++) {
+                  resB[i][j - 2] = block[i][j];
+              }
+          }
+      }
+      else if (moveLeft = 180) {
+          let tempB: number[][] = new Array();
+          for (let i = 0; i < 4; i++) {
+              tempB.push([0, 0, 0, 0]);
+          }
+          for (let i = 0; i < 4; i++) {
+              for (let j = 0; j < 3; j++) {
+                  tempB[i][j] = block[i][j + 1];
+              }
+          }
+          for (let i = 2; i < 4; i++) {
+              for (let j = 0; j < 4; j++) {
+                  resB[i - 2][j] = tempB[i][j];
+              }
+          }
+
+
+      }
+      else if (moveLeft = 270) {
+
+          for (let i = 0; i < 3; i++) {
+              for (let j = 0; j < 4; j++) {
+                  resB[i][j] = block[i+1][j];
+              }
+          }
+      }
+      return resB;
+  }
+       
+
   /**
    * 得到需要的旋转后的方块 */
-  static GetRotateBlock()
+  static GetRotateBlock():void
   { 
-      let lb
-      this.dic[ShapeType.LBlock]["90"]=
-      
+      /*
+      let lb = this.GetIniBlock(ShapeType.LBlock);
+      this.dic[ShapeType.LBlock]["90"] = this.Rotate90(lb);
+      this.dic[ShapeType.LBlock]["180"] = this.Rotate90(this.Rotate90(lb));
+      this.dic[ShapeType.LBlock]["270"] = this.Rotate90(this.Rotate90(this.Rotate90(lb)));
+      */
+    
+      for (let i = 0; i < 7; i++) {
+
+          let block = this.GetIniBlock(i);
+          let b90 = this.Rotate90(block);
+          let b180 = this.Rotate90(b90);
+          let b270 = this.Rotate90(b180);
+
+          if (i as ShapeType == ShapeType.LinePiece) {
+
+              let hp90 = new hashmap.HashMap();
+              this.hp.set(i as ShapeType, hp90);
+              hp90.set("90", this.MoveBlock(b90, 90));
+
+              let hp180 = new hashmap.HashMap();
+              this.hp.set(i as ShapeType, hp180);
+              hp180.set("180", block);
+
+              let hp270 = new hashmap.HashMap();
+              this.hp.set(i as ShapeType, hp270);
+              hp270.set("270", [[0, 1, 0, 0],
+                  [0, 1, 0, 0],
+                  [0, 1, 0, 0],
+                  [0, 1, 0, 0]]);
+              continue;
+          }  
+
+          let hp90 = new hashmap.HashMap();          
+          this.hp.set(i as ShapeType,hp90);          
+          hp90.set("90", this.MoveBlock(b90, 90));
+
+           let hp180 = new hashmap.HashMap();          
+          this.hp.set(i as ShapeType,hp180);          
+          hp180.set("180", this.MoveBlock(b180, 180));
+
+           let hp270 = new hashmap.HashMap();          
+          this.hp.set(i as ShapeType,hp270);          
+          hp270.set("270", this.MoveBlock(b270, 270));
+          
+
+       /*
+          this.dic.push([[i as ShapeType], ["90"], this.MoveBlock(b90, true)]);
+          this.dic.push([[i as ShapeType],["180"],this.MoveBlock( b180,false)]);
+          this.dic.push([[i as ShapeType],["270"] , this.Rotate90(b270)]);
+          */
+      }
   }
-
-
-
-
-
-
+    
+  static PrintfTest()
+  { 
+      this.GetRotateBlock();
+      let block = this.hp.get(ShapeType.LBlock).get("180")
+    //  alert(block);
+      console.log(block);
+  }
+    
 }
 
 
@@ -114,7 +214,7 @@ class Tetris {
   RSquiggly:反Z型方块
   LinePiece:一根直的方块
  */
-enum ShapeType { LBlock = 0, Square, RLBlock, TBlcok, Squiggly, RSquiggly, LinePiece }
+export enum ShapeType { LBlock = 0, Square, RLBlock, TBlcok, Squiggly, RSquiggly, LinePiece }
 
 
 /**

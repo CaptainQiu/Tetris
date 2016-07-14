@@ -1,4 +1,5 @@
 const electron = require('electron')
+let Tetris = require('./Tetris');
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
@@ -36,6 +37,9 @@ app.on('ready', createWindow)
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+
+  Tetris.Tetris.PrintfTest()
+
   if (process.platform !== 'darwin') {
     app.quit()
   }
