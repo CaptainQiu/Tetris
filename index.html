@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+  </head>
+  <body>
+     <script>
+     var  date1 = new Date();
+    var one = date1.getTime();
+      var num = 10000;
+        var num2 = 1000;
+        for (var index = 0; index < num; index++) {
+            for (var j = 0; j < num2; j++) {
+   
+                var s = index.toString();
+                s =s+".119922";
+                var sn = parseFloat(s);
+              sn=  sn / sn + 1;
+            }
+        
+        }
+    var date2 = new Date();
+    var two = date2.getTime();
+    alert(two - one);
+  </script>
+    <h1>Hello哈哈 World!</h1>
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+  </body>
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+
+  </script>
+</html>
