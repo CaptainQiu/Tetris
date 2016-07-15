@@ -111,7 +111,7 @@ export class Tetris {
       for (let i = 0; i < 4; i++) {
           resB.push([0, 0, 0, 0]);
       }
-
+    
       if (moveLeft == 90) {
           for (let i = 0; i < 4; i++) {
               for (let j = 2; j < 4; j++) {
@@ -119,7 +119,7 @@ export class Tetris {
               }
           }
       }
-      else if (moveLeft = 180) {
+      else if (moveLeft ==180) {
           let tempB: number[][] = new Array();
           for (let i = 0; i < 4; i++) {
               tempB.push([0, 0, 0, 0]);
@@ -137,13 +137,15 @@ export class Tetris {
 
 
       }
-      else if (moveLeft = 270) {
+      else if (moveLeft ==270) {
 
+        
           for (let i = 0; i < 3; i++) {
               for (let j = 0; j < 4; j++) {
                   resB[i][j] = block[i+1][j];
               }
           }
+          
       }
       return resB;
   }
@@ -181,6 +183,17 @@ export class Tetris {
                   [0, 1, 0, 0]]);
               continue;
           }  
+          if (i as ShapeType == ShapeType.Square)
+          { 
+              let hp = new hashmap.HashMap();
+              this.hp.set(i as ShapeType, hp);
+              hp.set("90", block);
+
+              hp.set("180", block);
+
+              hp.set("270", block);
+              continue;
+          }    
 
           let hp = new hashmap.HashMap();          
           this.hp.set(i as ShapeType,hp);          
@@ -203,7 +216,7 @@ export class Tetris {
   static PrintfTest()
   { 
       this.GetRotateBlock();
-      let block = this.hp.get(ShapeType.LBlock).get("180")
+      let block = this.hp.get(ShapeType.LBlock).get("270")
     //  alert(block);
       console.log(block);
       console.log(this.hp.get(ShapeType.LBlock));

@@ -7,12 +7,16 @@ export class SmallBlock {
     x: number;
     y: number;
     length: number;
+    lineWidth: number;
     cv;
-    constructor(cv, x: number, y: number, len: number) {
+    constructor(cv, x: number, y: number, len: number,line:number) {
         this.cv = cv.getContext("2d");
         this.x = x;
         this.y = y;
         this.length = len;
+        this.lineWidth = line;
+        this.cv.strokeStyle = "gray";
+        this.cv.lineWidth = line;
     }
     
     SetColor(color: string) {
@@ -20,15 +24,11 @@ export class SmallBlock {
     }
 
     Draw() {
-        
-        this.cv.fillRect(this.x, this.y, this.length, this.length);
+         this.cv.fillRect(this.x, this.y, this.length, this.length);
+         this.cv.strokeRect(this.x + this.lineWidth / 2, this.y + this.lineWidth / 2, this.length - this.lineWidth,
+             this.length-this.lineWidth);
+       
     }
-    
-    
-    ClearDoing()
-    { 
-        this.cv.clearRect(this.x, this.y, this.length, this.length);
-    }  
 
     Clear() { 
         //this.Call(() => { this.ClearDoing(); });
@@ -57,13 +57,13 @@ export class SmallBlock {
     }
 
     static Test(cv) {
-        let sb = new SmallBlock(cv, 30, 30, 30);
+        let sb = new SmallBlock(cv, 30, 30, 60,6);
         sb.SetColor("red");
         sb.Draw();
-        sb.MoveDown();
-        sb.MoveLeft();
-        setInterval(sb.MoveDown.bind(sb),1000);
-        setInterval(sb.MoveRight.bind(sb),1000);
+        //sb.MoveDown();
+      //  sb.MoveLeft();
+      //  setInterval(sb.MoveDown.bind(sb),1000);
+      //  setInterval(sb.MoveRight.bind(sb),1000);
         
     }
     

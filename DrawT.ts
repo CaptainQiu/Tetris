@@ -20,6 +20,8 @@ export class DrawT
     nowBlock: number[][];
     tetrist: Tetris;
 
+    color: string;
+
     static cv = document.getElementById("canvas");
 
     constructor(tetris:Tetris)
@@ -38,7 +40,8 @@ export class DrawT
             { 
                 if (this.tetrist.nowBlock[i][j] != 0)
                 { 
-                    let sb = new SmallBlock(DrawT.cv,  this.nowX+(j)* blocklength,this.nowY+( i ) * blocklength,blocklength);
+                    let sb = new SmallBlock(DrawT.cv,  this.nowX+(j)* blocklength,this.nowY+( i ) * blocklength,blocklength,2);
+                    this.SetColor();
                     this.sbArray.push(sb);
                 }    
             }    
@@ -46,6 +49,7 @@ export class DrawT
     }
 
     Draw() {
+        this.SetColor();
         for (let i = 0; i < this.sbArray.length; i++) {
             this.sbArray[i].Draw();
         }
@@ -76,17 +80,25 @@ export class DrawT
         this.IniNew();
         this.Draw();
     }
+    SetColor( )
+    { 
+          for (let i = 0; i < this.sbArray.length; i++)
+        { 
+              this.sbArray[i].SetColor(this.color);
+        } 
+    }
 
     static Test()
     { 
         Tetris.GetRotateBlock();
-        let t = new DrawT(new Tetris(ShapeType.RLBlock));
+        
+        let t = new DrawT(new Tetris(ShapeType.LinePiece));
+        t.color = "red";
         t.IniNew();
         t.Draw();
         //setInterval(t.MoveDown.bind(t), 1000);
         setInterval(t.Rotate.bind(t),1000);
-        
-        
+
     }
 
 }

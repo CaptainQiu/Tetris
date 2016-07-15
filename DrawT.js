@@ -17,13 +17,15 @@ var DrawT = (function () {
         for (var i = 0; i < 4; i++) {
             for (var j = 0; j < 4; j++) {
                 if (this.tetrist.nowBlock[i][j] != 0) {
-                    var sb = new SmallBlock_1.SmallBlock(DrawT.cv, this.nowX + (j) * blocklength, this.nowY + (i) * blocklength, blocklength);
+                    var sb = new SmallBlock_1.SmallBlock(DrawT.cv, this.nowX + (j) * blocklength, this.nowY + (i) * blocklength, blocklength, 2);
+                    this.SetColor();
                     this.sbArray.push(sb);
                 }
             }
         }
     };
     DrawT.prototype.Draw = function () {
+        this.SetColor();
         for (var i = 0; i < this.sbArray.length; i++) {
             this.sbArray[i].Draw();
         }
@@ -47,9 +49,15 @@ var DrawT = (function () {
         this.IniNew();
         this.Draw();
     };
+    DrawT.prototype.SetColor = function () {
+        for (var i = 0; i < this.sbArray.length; i++) {
+            this.sbArray[i].SetColor(this.color);
+        }
+    };
     DrawT.Test = function () {
         Tetris_1.Tetris.GetRotateBlock();
-        var t = new DrawT(new Tetris_1.Tetris(Tetris_1.ShapeType.RLBlock));
+        var t = new DrawT(new Tetris_1.Tetris(Tetris_1.ShapeType.LinePiece));
+        t.color = "red";
         t.IniNew();
         t.Draw();
         //setInterval(t.MoveDown.bind(t), 1000);

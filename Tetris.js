@@ -92,7 +92,7 @@ var Tetris = (function () {
                 }
             }
         }
-        else if (moveLeft = 180) {
+        else if (moveLeft == 180) {
             var tempB = new Array();
             for (var i = 0; i < 4; i++) {
                 tempB.push([0, 0, 0, 0]);
@@ -108,7 +108,7 @@ var Tetris = (function () {
                 }
             }
         }
-        else if (moveLeft = 270) {
+        else if (moveLeft == 270) {
             for (var i = 0; i < 3; i++) {
                 for (var j = 0; j < 4; j++) {
                     resB[i][j] = block[i + 1][j];
@@ -142,6 +142,14 @@ var Tetris = (function () {
                     [0, 1, 0, 0]]);
                 continue;
             }
+            if (i == ShapeType.Square) {
+                var hp_2 = new hashmap.HashMap();
+                this.hp.set(i, hp_2);
+                hp_2.set("90", block);
+                hp_2.set("180", block);
+                hp_2.set("270", block);
+                continue;
+            }
             var hp = new hashmap.HashMap();
             this.hp.set(i, hp);
             hp.set("90", this.MoveBlock(b90, 90));
@@ -151,7 +159,7 @@ var Tetris = (function () {
     };
     Tetris.PrintfTest = function () {
         this.GetRotateBlock();
-        var block = this.hp.get(ShapeType.LBlock).get("180");
+        var block = this.hp.get(ShapeType.LBlock).get("270");
         //  alert(block);
         console.log(block);
         console.log(this.hp.get(ShapeType.LBlock));
