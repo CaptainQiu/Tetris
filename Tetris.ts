@@ -1,5 +1,4 @@
-/// <reference path="github-electron.d.ts" />
-import electron = require('electron');
+
 import hashmap = require('./tools/hashmap');
 /**
  * Tetris
@@ -7,13 +6,31 @@ import hashmap = require('./tools/hashmap');
 export class Tetris {
     
     shape: ShapeType;
-    direction: Direction;
-    static dic =new Array();
+    direction: number=0;
     static hp = new hashmap.HashMap();
+    nowBlock: number[][];
     
-
+    
     constructor( st:ShapeType) {
-        
+        this.nowBlock = Tetris.GetIniBlock(st);
+        this.shape = st;
+    }
+
+    Rotate() {
+        this.direction += 90;
+        if (this.direction == 360) {
+            this.direction = 0;
+        }
+
+        if (this.direction == 0) {
+            this.nowBlock = Tetris.GetIniBlock(this.shape);
+        }
+        else {
+            console.log(this.direction);
+          
+            this.nowBlock = Tetris.hp.get(this.shape).get(this.direction.toString());
+            console.log(this.nowBlock);
+        }
     }
 
 
@@ -152,34 +169,27 @@ export class Tetris {
 
           if (i as ShapeType == ShapeType.LinePiece) {
 
-              let hp90 = new hashmap.HashMap();
-              this.hp.set(i as ShapeType, hp90);
-              hp90.set("90", this.MoveBlock(b90, 90));
+              let hp = new hashmap.HashMap();
+              this.hp.set(i as ShapeType, hp);
+              hp.set("90", this.MoveBlock(b90, 90));
 
-              let hp180 = new hashmap.HashMap();
-              this.hp.set(i as ShapeType, hp180);
-              hp180.set("180", block);
+              hp.set("180", block);
 
-              let hp270 = new hashmap.HashMap();
-              this.hp.set(i as ShapeType, hp270);
-              hp270.set("270", [[0, 1, 0, 0],
+              hp.set("270", [[0, 1, 0, 0],
                   [0, 1, 0, 0],
                   [0, 1, 0, 0],
                   [0, 1, 0, 0]]);
               continue;
           }  
 
-          let hp90 = new hashmap.HashMap();          
-          this.hp.set(i as ShapeType,hp90);          
-          hp90.set("90", this.MoveBlock(b90, 90));
+          let hp = new hashmap.HashMap();          
+          this.hp.set(i as ShapeType,hp);          
+          hp.set("90", this.MoveBlock(b90, 90));
 
-           let hp180 = new hashmap.HashMap();          
-          this.hp.set(i as ShapeType,hp180);          
-          hp180.set("180", this.MoveBlock(b180, 180));
-
-           let hp270 = new hashmap.HashMap();          
-          this.hp.set(i as ShapeType,hp270);          
-          hp270.set("270", this.MoveBlock(b270, 270));
+         
+          hp.set("180", this.MoveBlock(b180, 180));
+       
+          hp.set("270", this.MoveBlock(b270, 270));
           
 
        /*
@@ -196,6 +206,7 @@ export class Tetris {
       let block = this.hp.get(ShapeType.LBlock).get("180")
     //  alert(block);
       console.log(block);
+      console.log(this.hp.get(ShapeType.LBlock));
   }
     
 }

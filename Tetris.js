@@ -4,8 +4,25 @@ var hashmap = require('./tools/hashmap');
  * Tetris
  */
 var Tetris = (function () {
-    function Tetris(st, firstDirection) {
+    function Tetris(st) {
+        this.direction = 0;
+        this.nowBlock = Tetris.GetIniBlock(st);
+        this.shape = st;
     }
+    Tetris.prototype.Rotate = function () {
+        this.direction += 90;
+        if (this.direction == 360) {
+            this.direction = 0;
+        }
+        if (this.direction == 0) {
+            this.nowBlock = Tetris.GetIniBlock(this.shape);
+        }
+        else {
+            console.log(this.direction);
+            this.nowBlock = Tetris.hp.get(this.shape).get(this.direction.toString());
+            console.log(this.nowBlock);
+        }
+    };
     /**
      * 得到初始方块 */
     Tetris.GetIniBlock = function (myshape) {
@@ -68,26 +85,33 @@ var Tetris = (function () {
         for (var i = 0; i < 4; i++) {
             resB.push([0, 0, 0, 0]);
         }
-        if (moveLeft) {
+        if (moveLeft == 90) {
             for (var i = 0; i < 4; i++) {
                 for (var j = 2; j < 4; j++) {
                     resB[i][j - 2] = block[i][j];
                 }
             }
         }
-        else {
+        else if (moveLeft = 180) {
             var tempB = new Array();
             for (var i = 0; i < 4; i++) {
                 tempB.push([0, 0, 0, 0]);
             }
             for (var i = 0; i < 4; i++) {
-                for (var j = 2; j < 4; j++) {
-                    tempB[i][j - 2] = block[i][j];
+                for (var j = 0; j < 3; j++) {
+                    tempB[i][j] = block[i][j + 1];
                 }
             }
             for (var i = 2; i < 4; i++) {
                 for (var j = 0; j < 4; j++) {
                     resB[i - 2][j] = tempB[i][j];
+                }
+            }
+        }
+        else if (moveLeft = 270) {
+            for (var i = 0; i < 3; i++) {
+                for (var j = 0; j < 4; j++) {
+                    resB[i][j] = block[i + 1][j];
                 }
             }
         }
@@ -107,18 +131,31 @@ var Tetris = (function () {
             var b90 = this.Rotate90(block);
             var b180 = this.Rotate90(b90);
             var b270 = this.Rotate90(b180);
-            var hp90 = new hashmap.HashMap();
-            this.hp.set(i, hp90);
-            hp90.set("90", this.MoveBlock(b90, true));
+            if (i == ShapeType.LinePiece) {
+                var hp_1 = new hashmap.HashMap();
+                this.hp.set(i, hp_1);
+                hp_1.set("90", this.MoveBlock(b90, 90));
+                hp_1.set("180", block);
+                hp_1.set("270", [[0, 1, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 1, 0, 0],
+                    [0, 1, 0, 0]]);
+                continue;
+            }
+            var hp = new hashmap.HashMap();
+            this.hp.set(i, hp);
+            hp.set("90", this.MoveBlock(b90, 90));
+            hp.set("180", this.MoveBlock(b180, 180));
+            hp.set("270", this.MoveBlock(b270, 270));
         }
     };
     Tetris.PrintfTest = function () {
         this.GetRotateBlock();
-        var block = this.hp.get(ShapeType.LBlock).get("90");
+        var block = this.hp.get(ShapeType.LBlock).get("180");
         //  alert(block);
         console.log(block);
+        console.log(this.hp.get(ShapeType.LBlock));
     };
-    Tetris.dic = new Array();
     Tetris.hp = new hashmap.HashMap();
     return Tetris;
 }());
@@ -132,7 +169,6 @@ exports.Tetris = Tetris;
   RSquiggly:反Z型方块
   LinePiece:一根直的方块
  */
-var ShapeType;
 (function (ShapeType) {
     ShapeType[ShapeType["LBlock"] = 0] = "LBlock";
     ShapeType[ShapeType["Square"] = 1] = "Square";
@@ -141,7 +177,8 @@ var ShapeType;
     ShapeType[ShapeType["Squiggly"] = 4] = "Squiggly";
     ShapeType[ShapeType["RSquiggly"] = 5] = "RSquiggly";
     ShapeType[ShapeType["LinePiece"] = 6] = "LinePiece";
-})(ShapeType || (ShapeType = {}));
+})(exports.ShapeType || (exports.ShapeType = {}));
+var ShapeType = exports.ShapeType;
 /**
  *顺时针旋转角度，90度
  */

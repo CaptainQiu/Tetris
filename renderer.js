@@ -2,6 +2,9 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 let Tetris = require('./Tetris');
+let sb = require('./SmallBlock');
+let dt = require('./DrawT');
+let dsd = require('./tools/hashmap');
 
 function caculate() {
     let date1 = new Date();
@@ -24,4 +27,9 @@ function caculate() {
 }
 
 
-document.getElementById("debug1").onclick = Tetris.Tetris.PrintfTest();
+//document.getElementById("debug1").onclick = Tetris.Tetris.PrintfTest();
+
+document.getElementById("debug1").onclick =function () {
+    //sb.SmallBlock.Test(document.getElementById('canvas'));  
+    dt.DrawT.Test();
+} 
